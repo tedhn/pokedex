@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from "@/utils/function";
 import { IPokemon } from "@/utils/types";
 import React from "react";
 
@@ -10,15 +11,15 @@ const Card: React.FC<CardProps> = ({ pokemon }) => {
     <div className="border-2 rounded border-slate-700 p-4 h-25 flex justify-start items-center">
       <img src={pokemon.image} className="h-16 w-16 object-contain mr-4" />
       <div>
-        <p className="text-white capitalize mb-2">{pokemon.name}</p>
+        <p className="text-white mb-2">{capitalizeFirstLetter(pokemon.name)}</p>
 
         <div>
           {pokemon.type.map((type, idx) => (
             <span
               key={type + idx}
-              className="bg-slate-600 capitalize text-white px-2 py-1 text-xs rounded mr-2"
+              className="bg-slate-600 text-white px-2 py-1 text-xs rounded mr-2"
             >
-              {type}
+              {capitalizeFirstLetter(type)}
             </span>
           ))}
         </div>

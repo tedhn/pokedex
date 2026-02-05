@@ -9,37 +9,17 @@ const pokedexOptions = {
   cacheLimit: 100 * 1000, // 100s
   timeout: 5 * 1000, // 5s
 };
-const pokedex = new Pokedex(pokedexOptions);
+export const pokedex = new Pokedex(pokedexOptions);
 
 const app: express.Application = express();
 const port = 3001;
 
 app.use(cors());
 
-app.get("/", async (req, res) => {
-  const pokemonsRes = await pokedex.getPokemonsList({ limit: 9, offset: 0 });
-
-  console.log(pokemonsRes);
-
-  res.send("Hello World!");
-});
-
-app.get("/pokemon", async (req, res) => {
-  const { limit, offset } = req.query;
-
-  const limitNum = limit ? Number(limit) : 9;
-  const offsetNum = offset ? Number(offset) : 0;
-
-  const {
-    results: pokemonNamesRes,
-    count,
-    next,
-  } = await pokedex.getPokemonsList({
-    limit: limitNum,
-    offset: offsetNum,
-  });
-
-  const pokemonDetailsPromises = pokemonNamesRes.map((pokemon) => {
+export const getPokemonDetails = async (
+  pokemonNames: Pokedex.NamedAPIResource[],
+) => {
+  const pokemonDetailsPromises = pokemonNames.map((pokemon) => {
     return pokedex.getPokemonByName(pokemon.name);
   });
 
@@ -58,12 +38,59 @@ app.get("/pokemon", async (req, res) => {
       };
     });
 
+  return pokemonData;
+};
+
+app.get("/", async (req, res) => {
+  res.send("Hello World!");
+});
+
+app.get("/pokemon", async (req, res) => {
+  const { limit, offset } = req.query;
+
+  const limitNum = limit ? Number(limit) : 9;
+  const offsetNum = offset ? Number(offset) : 0;
+
+  const {
+    results: allPokemon,
+    count,
+    next,
+  } = await pokedex.getPokemonsList({
+    limit: limitNum,
+    offset: offsetNum,
+  });
+
+  const pokemonData = await getPokemonDetails(allPokemon);
+
   res.json({
     data: pokemonData,
     total: count,
     hasNext: next !== null,
     nextOffset: next ? offsetNum + limitNum : null,
   });
+});
+
+app.get("/search", async (req, res) => {
+  const { name } = req.query;
+
+  if (!name || typeof name !== "string") {
+    return res.json({ data: [] });
+  }
+
+  const searchTerm = name.toLowerCase();
+
+  const { results: allPokemon } = await pokedex.getPokemonsList({
+    limit: 1500,
+    offset: 0,
+  });
+
+  const matchingPokemon = allPokemon.filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(searchTerm),
+  );
+
+  const pokemonData = await getPokemonDetails(matchingPokemon);
+
+  res.json({ data: pokemonData });
 });
 
 app.listen(port, () => {

@@ -6,9 +6,13 @@ export interface IPokemon {
   weight: number;
 }
 
-export interface IPokemonResponse {
+export interface IGetPokemonResponse {
   data: IPokemon[];
   total: number;
   hasNext: boolean;
   nextOffset: number | null;
+}
+
+export interface ISearchPokemonResponse {
+  data: IPokemon[];
 }
