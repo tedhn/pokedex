@@ -1,5 +1,5 @@
 "use client";
-import Card from "@/components/Card";
+import PokemonList from "@/components/PokemonList";
 import Button from "@/components/Button";
 import useInfiniteQueryHook from "@/hooks/useInfiniteQueryHook";
 import { searchPokemon } from "@/utils/api";
@@ -10,7 +10,7 @@ export default function Home() {
   const [searchInput, setSearchInput] = React.useState("");
   const [isSearching, setIsSearching] = React.useState(false);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQueryHook();
 
   const {
@@ -72,32 +72,14 @@ export default function Home() {
               </Button>
             </div>
 
-            <div className="my-4 grid grid-cols-2 lg:grid-cols-3 gap-4">
-              {pokemonList.length === 0 ? (
-                <p className="text-white col-span-3 text-center">
-                  No Pokémon found.
-                </p>
-              ) : (
-                pokemonList.map((pokemon) => (
-                  <Card key={pokemon.name} pokemon={pokemon} />
-                ))
-              )}
-            </div>
-
-            {!isSearching && (
-              <div className="flex justify-center pb-4">
-                {isFetchingNextPage ? (
-                  "Loading more..."
-                ) : (
-                  <Button
-                    onClick={() => fetchNextPage()}
-                    disabled={!hasNextPage || isFetchingNextPage}
-                  >
-                    {hasNextPage ? "Load More" : "No more data"}
-                  </Button>
-                )}
-              </div>
-            )}
+            <PokemonList
+              pokemonList={pokemonList}
+              isSearching={isSearching}
+              isLoading={isSearchPending || isLoading}
+              fetchNextPage={fetchNextPage}
+              isFetchingNextPage={isFetchingNextPage}
+              hasNextPage={hasNextPage}
+            />
           </div>
           <div className="border-2 border-green-600 col-span-3 sticky top-4 h-75">
             STSATIC IMAGE
