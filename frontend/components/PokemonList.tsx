@@ -20,8 +20,6 @@ const PokemonList: React.FC<PokemonListProps> = ({
   isFetchingNextPage,
   hasNextPage,
 }) => {
-  console.log(isLoading, pokemonList);
-
   if (isLoading) {
     return <div className="text-center text-white">Loading...</div>;
   }
