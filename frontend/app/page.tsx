@@ -15,6 +15,7 @@ import squirtleImage from "@/assets/squirtle.png";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import Carousel from "@/components/Carousel";
+import { toast } from "sonner";
 
 export default function Home() {
   const [searchInput, setSearchInput] = React.useState("");
@@ -22,8 +23,27 @@ export default function Home() {
     React.useState(searchInput);
   const [isSearching, setIsSearching] = React.useState(false);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQueryHook();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError: isListError,
+    error: listError,
+  } = useInfiniteQueryHook();
+
+  React.useEffect(() => {
+    if (isListError && listError) {
+      const errorMessage =
+        listError instanceof Error
+          ? listError.message
+          : "Failed to load Pokémon list. Please check if the backend is running.";
+      toast.error("Backend Error", {
+        description: errorMessage,
+      });
+    }
+  }, [isListError, listError]);
 
   const {
     mutate: mutateSearch,
@@ -35,6 +55,15 @@ export default function Home() {
     mutationFn: (name: string) => {
       setIsSearching(true);
       return searchPokemon({ name });
+    },
+    onError: (error) => {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to search Pokémon. Please try again.";
+      toast.error("Search Error", {
+        description: errorMessage,
+      });
     },
   });
 
@@ -61,7 +90,7 @@ export default function Home() {
 
   const pokemonList =
     searchInput && isSearchSuccess && !isSearchPending
-      ? searchResults.data
+      ? searchResults?.data || []
       : data?.pages.flatMap((page) => page.data) || [];
 
   return (
@@ -107,10 +136,11 @@ export default function Home() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 className="w-full flex rounded border-2 border-slate-700 px-4 py-2 bg-slate-800 text-white focus:outline-none focus:border-blue-500"
+                placeholder="Search for Pokémon..."
               />
               <Button
                 onClick={() => mutateSearch(searchInput)}
-                disabled={isSearchPending}
+                disabled={isSearchPending || !searchInput.trim()}
               >
                 Search
               </Button>

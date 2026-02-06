@@ -2,10 +2,11 @@
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import React from "react";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { IPokemon } from "@/utils/types";
 
 interface PokemonListProps {
-  pokemonList: any[];
+  pokemonList: IPokemon[];
   isSearching: boolean;
   isLoading: boolean;
   fetchNextPage: () => void;
