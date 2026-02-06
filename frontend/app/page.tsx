@@ -2,7 +2,7 @@
 import PokemonList from "@/components/PokemonList";
 import Button from "@/components/Button";
 import useInfiniteQueryHook from "@/hooks/useInfiniteQueryHook";
-import { searchPokemon } from "@/utils/api";
+import { searchPokemon } from "@/api/api";
 import zazaBanner from "@/assets/zaza-banner.png";
 import mewBanner from "@/assets/mew-banner.png";
 import ashImage from "@/assets/ash.png";

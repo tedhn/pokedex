@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IGetPokemonResponse, ISearchPokemonResponse } from "./types";
+import { IGetPokemonResponse, ISearchPokemonResponse } from "../utils/types";
 
 const API_URL = "http://localhost:3001";
 
