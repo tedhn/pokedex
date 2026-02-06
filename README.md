@@ -27,6 +27,8 @@ A full-stack web application for browsing and searching Pokémon with infinite s
 - **Data Fetching**: TanStack React Query (React Query)
 - **HTTP Client**: Axios
 - **Icons**: Lucide React
+- **Notifications**: Sonner (Toast notifications)
+- **Error Handling**: Global Error Boundary + Toast notifications
 - **Language**: TypeScript
 
 ---
@@ -57,6 +59,8 @@ A full-stack web application for browsing and searching Pokémon with infinite s
    ```bash
    node app.ts
    ```
+
+   The backend API will be available at `http://localhost:3001`
 
 ### Frontend Setup
 
@@ -227,12 +231,13 @@ interface ISearchPokemonResponse {
 ### Utilities
 
 - **types.ts**: TypeScript interfaces for type safety
-- **Providers.tsx**: React Query provider setup
+- **Providers.tsx**: React Query + Sonner Toaster provider setup
 - **function.ts**: Additional utility functions
 
 ### Api
 
-- **api.ts**: Axios client functions for API calls
+- **api.ts**: Axios client functions for API calls with error handling
+- **APIError class**: Custom error class for API errors
 
 ---
 
