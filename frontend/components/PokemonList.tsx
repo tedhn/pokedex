@@ -2,6 +2,7 @@
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import React from "react";
+import { Loader, Loader2 } from "lucide-react";
 
 interface PokemonListProps {
   pokemonList: any[];
@@ -21,7 +22,11 @@ const PokemonList: React.FC<PokemonListProps> = ({
   hasNextPage,
 }) => {
   if (isLoading) {
-    return <div className="text-center text-white">Loading...</div>;
+    return (
+      <div className="text-center text-white h-75 flex justify-center items-center">
+        <Loader2 className="animate-spin m-auto" />
+      </div>
+    );
   }
 
   if (pokemonList.length === 0) {
@@ -31,7 +36,7 @@ const PokemonList: React.FC<PokemonListProps> = ({
   return (
     <div>
       {/*  Pokemon Cards Grid */}
-      <div className="my-4 grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="my-4 grid grid-cols-2 lg:grid-cols-3 gap-2">
         {pokemonList.map((pokemon) => (
           <Card key={pokemon.name} pokemon={pokemon} />
         ))}
@@ -39,16 +44,18 @@ const PokemonList: React.FC<PokemonListProps> = ({
 
       {!isSearching && (
         <div className="flex justify-center pb-4">
-          {isFetchingNextPage ? (
-            "Loading more..."
-          ) : (
-            <Button
-              onClick={() => fetchNextPage()}
-              disabled={!hasNextPage || isFetchingNextPage}
-            >
-              {hasNextPage ? "Load More" : "No more data"}
-            </Button>
-          )}
+          <Button
+            onClick={() => fetchNextPage()}
+            disabled={!hasNextPage || isFetchingNextPage}
+          >
+            {isFetchingNextPage ? (
+              <Loader2 className="animate-spin" />
+            ) : hasNextPage ? (
+              "Load More"
+            ) : (
+              "No more data"
+            )}
+          </Button>
         </div>
       )}
     </div>
